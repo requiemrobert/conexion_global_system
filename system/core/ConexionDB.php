@@ -1,4 +1,4 @@
-<?php 
+<?php
   // Incluimos el archivo de configuración el cual posee las credenciales de conexión
   include 'db_config.php';
 
@@ -12,37 +12,37 @@
     function __construct() {
       // Los parametros de la funcion mysqli() son las constantes previamente declaradas en el archivo config.php
       try {
-          
+
           $this->conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
-          
+
       } catch (mysqli_sql_exception $e){
           //Si no se puede realizar la conexión
           http_response_code(500);
           exit;
-      }  
-       
+      }
+
     }
 
     /**
      * obtiene un array de resultados
-     * Solo se usara para las consultas de tipo SELECT 
+     * Solo se usara para las consultas de tipo SELECT
      * @param string $sql query tipo select
      * @return Array con los registros obtenidos de la base de datos
      */
     function execute_query_login($dataArray, $sql = '') {
 
       extract($dataArray);
-  
+
       $stmt = $this->conn->prepare($sql);
-  
+
       $stmt->bind_param("ss" , $user_name, $password);
-   
+
       $stmt->execute();
 
-      $result = $stmt->get_result();        
-      $response_query = $result->fetch_all(MYSQLI_ASSOC); 
+      $result = $stmt->get_result();
+      $response_query = $result->fetch_all(MYSQLI_ASSOC);
 
-      $stmt->close();  
+      $stmt->close();
 
       return $response_query;
 
@@ -54,62 +54,14 @@
 
       $stmt->execute();
 
-      $result = $stmt->get_result();  
-      
+      $result = $stmt->get_result();
+
       $rows = $result->fetch_all(MYSQLI_ASSOC);
 
       $stmt->close();
 
-      print_r($rows);
-
-      $descripcion = [];
-
-      foreach ($rows as $key => $value) {
-
-         foreach ($value as $key => $ivalue) {
-             
-             array_push ($descripcion , $ivalue); 
-
-          } 
-      
-      }  
-
-    //print_r($descripcion);
-
-      /*
-        Array ( 
-                [0] => Array ( [descripcion] => operaciones ) 
-                [1] => Array ( [descripcion] => clientes ) 
-                [2] => Array ( [descripcion] => proveedores ) 
-                [3] => Array ( [descripcion] => productos ) ) 
-
-                Array ( [0] => operaciones 
-                        [1] => clientes 
-                        [2] => proveedores 
-                        [3] => productos )
-      */
-
-
-      $PRUEBA = [
-      
-        "rc" => 200 , 
-        "data"=> [ 
-                    "operaciones" =>["nomina", "pagos", "reportes"], 
-                    "clientes"=>["pagos","reportes"], 
-                    "prodcutos" 
-                ],
-        "mensaje" =>"bien"
-
-      ];
-
-      //echo json_encode($PRUEBA);
-
-      //$arrayDescripcion = ["descripcion" => [$descripcion]]; 
-
-      //print_r($arrayDescripcion);
-
       // Retorna el resultado obtenido
-      //return $rows;
+      return $rows;
     }
 
     // Funcion para hacer cambios dentro de la base de datos

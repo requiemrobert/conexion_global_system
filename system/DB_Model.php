@@ -48,15 +48,87 @@
     
     extract($dataArray);
 
-    $sql = "SELECT $array_field FROM autorizacion";  
-    $sql .= " INNER JOIN modulo ON autorizacion.id_modulo_fk = modulo.id_modulo";
-    $sql .= " INNER JOIN perfil ON autorizacion.id_perfil_fk = perfil.id_perfil";
-    $sql .= " INNER JOIN usuario ON usuario.id_perfil_fk = perfil.id_perfil";
-    $sql .= " WHERE usuario.`user_name` = '$user_name' AND usuario.`status` = $status";
+    $sql = '';
 
-    $response_query = $this->get_query($sql);
+    $sql .= " SELECT DISTINCT ";  
+    $sql .= " modulo_padre.descripcion AS padre_descripcion,";
+    $sql .= " modulo_hijo.descripcion AS hijo_descripcion";
+    $sql .= " FROM modulo AS modulo_padre";
+    $sql .= " INNER JOIN modulo AS modulo_hijo ON modulo_padre.id_modulo = modulo_hijo.id_modulo_fk,";
+    $sql .= " usuario";
+    $sql .= " INNER JOIN perfil ON usuario.id_perfil_fk = perfil.id_perfil"; 
+    $sql .= " INNER JOIN autorizacion ON autorizacion.id_perfil_fk = perfil.id_perfil";
+    $sql .= " INNER JOIN modulo ON autorizacion.id_modulo_fk = modulo.id_modulo"; 
+    $sql .= " WHERE usuario.`user_name` = '$user_name' AND autorizacion.acceso = $status";
 
- /*   $count = count($response_query) - 1;
+    $response_query = $this->get_query($sql); 
+
+    $opciones_padres = [];
+
+    //print_r( json_encode(array_values($response_query) ) );
+    //exit();
+
+    foreach ($response_query as $key => $value) {
+          
+         // array_push($opciones_padres, $value['padre_descripcion']); 
+          array_push($opciones_padres, $value['padre_descripcion']);
+    
+          foreach ($value as $descripcion) {
+                
+               //echo "[" . $descripcion . "]<br>";
+
+
+               //array_push($opciones_padres, $value['padre_descripcion']);  print_r($descripcion. " <br>") ;
+
+          }
+      
+    }
+
+    foreach ($opciones_padres as $value) {
+              
+              echo "key : " . $key . " val : " . $value;
+
+    }
+
+  // print_r($opciones_padres);
+
+    /*
+      Array ( 
+              [0] => Array ( 
+                             [padre_descripcion] => operaciones 
+                             [hijo_descripcion] => compra 
+                            )
+
+              [1] => Array ( 
+                             [padre_descripcion] => operaciones 
+                             [hijo_descripcion] => ventas 
+                            ) 
+              [2] => Array ( 
+                             [padre_descripcion] => operaciones 
+                             [hijo_descripcion] => movimientos 
+                            ) 
+              [3] => Array ( 
+                             [padre_descripcion] => productos 
+                             [hijo_descripcion] => en proceso 
+                            ) 
+              [4] => Array ( 
+                             [padre_descripcion] => productos 
+                             [hijo_descripcion] => listos 
+                            )
+              [5] => Array ( 
+                             [padre_descripcion] => clientes 
+                             [hijo_descripcion] => estadisticas 
+                            ) 
+              [6] => Array ( [padre_descripcion] => proveedores 
+                             [hijo_descripcion] => pagos 
+                            ) 
+            )
+  
+    */
+
+    exit();
+
+    /*$count = count($response_query) - 1;
 
     unset($response_query[$count]);*/
 
