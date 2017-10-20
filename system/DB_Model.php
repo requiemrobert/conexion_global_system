@@ -63,68 +63,31 @@
 
     $response_query = $this->get_query($sql); 
 
-    $opciones_padres = [];
-
-    //print_r( json_encode(array_values($response_query) ) );
-    //exit();
+    $array_opciones = [];
 
     foreach ($response_query as $key => $value) {
-          
-         // array_push($opciones_padres, $value['padre_descripcion']); 
-          array_push($opciones_padres, $value['padre_descripcion']);
-    
-          foreach ($value as $descripcion) {
-                
-               //echo "[" . $descripcion . "]<br>";
+            
+          $array_opciones[$key] = [ $value['padre_descripcion'] => $value['hijo_descripcion'] ] ;
 
+    }
 
-               //array_push($opciones_padres, $value['padre_descripcion']);  print_r($descripcion. " <br>") ;
+    $opciones = [];
 
-          }
+    $padre = '';
+
+    foreach ($array_opciones as $key => $value) {
       
+        if (array_keys($value)[0] == "operaciones") {
+            
+          $padre = array_keys($value)[0];
+        
+          array_push($opciones, array_values($value)[0] );
+        
+        }
+
     }
 
-    foreach ($opciones_padres as $value) {
-              
-              echo "key : " . $key . " val : " . $value;
-
-    }
-
-  // print_r($opciones_padres);
-
-    /*
-      Array ( 
-              [0] => Array ( 
-                             [padre_descripcion] => operaciones 
-                             [hijo_descripcion] => compra 
-                            )
-
-              [1] => Array ( 
-                             [padre_descripcion] => operaciones 
-                             [hijo_descripcion] => ventas 
-                            ) 
-              [2] => Array ( 
-                             [padre_descripcion] => operaciones 
-                             [hijo_descripcion] => movimientos 
-                            ) 
-              [3] => Array ( 
-                             [padre_descripcion] => productos 
-                             [hijo_descripcion] => en proceso 
-                            ) 
-              [4] => Array ( 
-                             [padre_descripcion] => productos 
-                             [hijo_descripcion] => listos 
-                            )
-              [5] => Array ( 
-                             [padre_descripcion] => clientes 
-                             [hijo_descripcion] => estadisticas 
-                            ) 
-              [6] => Array ( [padre_descripcion] => proveedores 
-                             [hijo_descripcion] => pagos 
-                            ) 
-            )
-  
-    */
+    print_r(json_encode($array_opciones ));
 
     exit();
 
