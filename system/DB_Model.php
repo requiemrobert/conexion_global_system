@@ -71,24 +71,46 @@
 
     }
 
-    $opciones = [];
+    $opciones_padres = [];
 
-    $padre = '';
+    $opciones_hijos = [];
+
+    $opcion_padre='';
+    $opcion_padre_aux='';
+
+    $padre_hijo =[];
 
     foreach ($array_opciones as $key => $value) {
-      
-        if (array_keys($value)[0] == "operaciones") {
-            
-          $padre = array_keys($value)[0];
-        
-          array_push($opciones, array_values($value)[0] );
-        
+
+        if ($opcion_padre =='' ) {
+
+          array_push($opciones_hijos, array_values($value)[0]);
+
+        }else if($opcion_padre == array_keys($value)[0]){
+
+          array_push($opciones_hijos, array_values($value)[0]);
+
+        }else{
+
+          $opciones_padres[array_keys($value)[0]] = $opciones_hijos;
+
+          $padre_hijo[$opcion_padre] = $opciones_padres[array_keys($value)[0]];
+
+          $opciones_hijos = [];
+
+          array_push($opciones_hijos, array_values($value)[0]);
+
+          $opcion_padre_aux = array_keys($value)[0];
+          
         }
 
-    }
+        $opcion_padre = array_keys($value)[0];
+    } 
 
-    print_r(json_encode($array_opciones ));
+    $opciones_padres[array_keys($value)[0]] = $opciones_hijos;
+    $padre_hijo[$opcion_padre_aux] = $opciones_padres[array_keys($value)[0]];
 
+    print_r(json_encode($padre_hijo));
     exit();
 
     /*$count = count($response_query) - 1;
