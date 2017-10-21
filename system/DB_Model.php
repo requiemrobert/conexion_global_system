@@ -82,11 +82,7 @@
 
     foreach ($array_opciones as $key => $value) {
 
-        if ($opcion_padre =='' ) {
-
-          array_push($opciones_hijos, array_values($value)[0]);
-
-        }else if($opcion_padre == array_keys($value)[0]){
+        if($opcion_padre == array_keys($value)[0] or empty($opcion_padre)){
 
           array_push($opciones_hijos, array_values($value)[0]);
 
@@ -110,18 +106,11 @@
     $opciones_padres[array_keys($value)[0]] = $opciones_hijos;
     $padre_hijo[$opcion_padre_aux] = $opciones_padres[array_keys($value)[0]];
 
-    print_r(json_encode($padre_hijo));
-    exit();
-
-    /*$count = count($response_query) - 1;
-
-    unset($response_query[$count]);*/
-
-      /*if ($response_query) {
-          return $this->response_json(200, $response_query, "consulta exitosa");
+      if ($response_query) {
+          return $this->response_json(200, $padre_hijo, "consulta exitosa");
       }else{
-          return $this->response_json(-200, $response_query, "no se pudo realizar la consulta");
-      }*/
+          return $this->response_json(-200, $padre_hijo, "no se pudo realizar la consulta");
+      }
 
   }
 
