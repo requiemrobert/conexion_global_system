@@ -1,12 +1,10 @@
 <?php 
  // Se incluye el archivo de conexion de base de datos
  include 'core/ConexionDB.php';
- // Se incluye la interfaz de Modelo
- include 'core/iConexionDB.php';
 
  // Se crea la clase que ejecuta llama a las funciones de ejecución para interactuar con la Base de datos
  // Esta clase extiende a la clase db_model en el archivo db_model.php (hereda sus propiedades y metodos)
- // Esta clase implementa la interfaz iModel (Enmascara cada una de las funciones declaradas) generic_class
+
  class DB_Model extends ConexionDB {
   // Ya que la clase es generica, es importante poseer una variable que permitira identificar con que tabla se trabaja
   public $entity;
@@ -60,6 +58,7 @@
     $sql .= " INNER JOIN autorizacion ON autorizacion.id_perfil_fk = perfil.id_perfil";
     $sql .= " INNER JOIN modulo ON autorizacion.id_modulo_fk = modulo.id_modulo"; 
     $sql .= " WHERE usuario.`user_name` = '$user_name' AND autorizacion.acceso = $status";
+    $sql .= " order by  padre_descripcion";
 
     $response_query = $this->get_query($sql); 
 
@@ -113,6 +112,21 @@
       }
 
   }
+
+  protected function ping($xml){
+
+    $arrayData = json_decode(json_encode((array)$xml), TRUE);
+    
+    extract($arrayData);      
+
+    $sql = "SELECT DISTINCT email FROM `usuario` where user_name = '$User' AND `password` = '$Pass'";  
+
+    $response_query = $this->get_query($sql); 
+
+    return $response_query;
+
+  }
+
 
   protected function response_json($status, $response, $mensaje) {
     

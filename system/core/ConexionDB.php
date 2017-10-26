@@ -49,6 +49,7 @@
     }
 
     function get_query($sql) {
+
       // Lee la cadena SQL recibida y ejecuta la consulta
       $stmt = $this->conn->prepare($sql);
 
@@ -79,4 +80,5 @@
     function __destruct() {
       $this->conn->close();
     }
+
   }

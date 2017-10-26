@@ -1,13 +1,13 @@
 <?php 
 
+include 'system/interface_layer.php';
+
 // Permite la conexion desde cualquier origen
 header("Access-Control-Allow-Origin: *");
 
 header("Content-Type: application/JSON");
 // Permite la ejecucion de los metodos
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");   
-
-include 'interface_layer.php';
 
   $bodyRequest = file_get_contents("php://input");
 
@@ -16,6 +16,7 @@ include 'interface_layer.php';
   $interface_layer = new InterfaceLayer();
   
   $interface_layer->route($dataArray);
+  
   
 
 
