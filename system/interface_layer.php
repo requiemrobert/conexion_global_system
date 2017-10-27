@@ -36,7 +36,7 @@ class InterfaceLayer extends DB_Model
 		      
 		      default:
 		          
-		        echo "no response service";
+		        echo $this->no_response();
 
 		      break;
 	      endswitch;

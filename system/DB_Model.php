@@ -127,6 +127,10 @@
 
   }
 
+  protected function no_response(){
+
+      $this->response_json(-200, NULL, "no es una peticion valida");
+  }
 
   protected function response_json($status, $response, $mensaje) {
     
