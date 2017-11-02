@@ -17,7 +17,7 @@ class InterfaceLayer extends DB_Model
    
 		  switch ($dataArray['rc']):
 		      case 'get_login':
-
+					
 		        echo $this->get_login($dataArray['data']);
 		            
 		      break;
@@ -36,7 +36,7 @@ class InterfaceLayer extends DB_Model
 		      
 		      default:
 		          
-		        echo $this->no_response();
+		        echo "No response del WS!!!";//$this->no_response();
 
 		      break;
 	      endswitch;

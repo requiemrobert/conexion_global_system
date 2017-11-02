@@ -31,7 +31,7 @@
     $sql = "SELECT $array_field FROM usuario WHERE user_name = ? AND password = ?";
 
     $response_query = $this->execute_query_login($dataArray, $sql);
-
+      
       if ($response_query) {
           return $this->response_json(200, $response_query, "consulta exitosa");
       }else{
@@ -129,7 +129,7 @@
 
   protected function no_response(){
 
-      $this->response_json(-200, NULL, "no es una peticion valida");
+      $this->response_json(-200, false, "no es una peticion valida");
   }
 
   protected function response_json($status, $response, $mensaje) {

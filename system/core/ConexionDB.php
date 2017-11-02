@@ -2,6 +2,43 @@
   // Incluimos el archivo de configuración el cual posee las credenciales de conexión
   include 'db_config.php';
 
+  class foo_mysqli extends mysqli {
+     
+    private $db_host;
+    private $db_user;
+    private $db_pass;
+    private $db_name;
+    private $persistent;
+
+    public function __construct($db_host, $db_user, $db_pass, $db_name, $persistent = true)
+    {
+        $this->db_host = $db_host;
+        $this->db_user = $db_user;
+        $this->db_pass = $db_pass;
+        $this->db_name = $db_name;
+        $this->persistent = $persistent;
+
+        parent::init();
+        parent::options(MYSQLI_OPT_CONNECT_TIMEOUT, 1);
+        @parent::real_connect(($this->persistent ? 'p:' : '') . $this->db_host, $this->db_user, $this->db_pass, $this->db_name);
+
+        if ($this->connect_errno)
+            die("All DB servers down!\n");
+    }
+
+    public function ping()
+    {
+        @parent::query('SELECT LAST_INSERT_ID()');
+
+        if ($this->errno == 2006)
+            $this->__construct($this->db_host, $this->db_user, $this->db_pass, $this->db_name, $this->persistent);
+    }
+
+
+
+  }
+
+
   // Se crea la clase de conexión y ejecución de consultas
   class ConexionDB {
 
@@ -13,11 +50,20 @@
       // Los parametros de la funcion mysqli() son las constantes previamente declaradas en el archivo config.php
       try {
 
-          $this->conn = new mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+          /* Comprobar la conexión */
+         
+          $this->conn = new foo_mysqli(DB_HOST, DB_USER, DB_PASS, DB_NAME);
+           
+          if ($this->conn->connect_errno) {
+              //printf("Falló la conexión: %s\n", $this->conn->connect_error);
+              //$this->conn->ping(); 
+              exit();
+          }
 
       } catch (mysqli_sql_exception $e){
           //Si no se puede realizar la conexión
           http_response_code(500);
+          echo "catch";
           exit;
       }
 
@@ -78,7 +124,14 @@
 
     // La función destructora cierra la conexión previamente abierta en el constructor
     function __destruct() {
-      $this->conn->close();
+
+      /* comprobar si el servidor sigue funcionando */
+      if (mysqli_ping($this->conn)) {
+          $this->conn->close();
+      } else {
+          printf ("Error: %s\n", mysqli_error($this->conn));
+      }
+     
     }
 
   }

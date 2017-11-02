@@ -15,4 +15,4 @@
  define("DB_PASS", "");
 
  // Nombre de la tabla sobre la cual se trabajara
- define("DB_NAME", "global_system");
+ define("DB_NAME", "ONA_GRAF");
